@@ -1,0 +1,40 @@
+FACU KARAOKE · CUMPLE 2026
+================================
+
+Incluye:
+- 145 canciones curadas
+- Filtros por género y etiquetas
+- Búsqueda por canción, artista o número
+- Favoritos
+- Sorteo aleatorio
+- Cola local de karaoke
+- Botón directo a búsqueda de karaoke en YouTube
+- QR automático cuando el archivo está publicado en una URL
+
+ARCHIVOS
+- Karaoke_Facu_2026.html: catálogo interactivo
+- Karaoke_Facu_2026.csv: catálogo editable
+
+USO EN LA MINI PC
+1) Abrí Karaoke_Facu_2026.html en Chrome/Edge.
+2) Ponelo en pantalla completa.
+3) Cada canción tiene número y botón “Karaoke”.
+4) La cola se guarda en el navegador aunque cierres la pestaña.
+
+QR
+Si abrís el HTML como archivo local (file://...), el QR no puede abrir ese archivo en otros celulares.
+Cuando lo publiques en una URL (por ejemplo GitHub Pages), el QR se genera solo con la URL de la página.
+También podés pegar manualmente una URL en el campo del QR.
+
+NOTA
+Los enlaces de karaoke abren búsquedas directas de YouTube en vez de fijar un video único,
+para evitar que el catálogo se rompa si un video se elimina o cambia de disponibilidad.
+
+
+NOVEDADES V2
+- El botón de cada canción ahora dice claramente "Abrir karaoke en YouTube".
+- Se agregó "Quitar de la lista".
+- Las canciones ocultas se guardan en el navegador.
+- Se pueden recuperar desde el filtro "Ocultas".
+- El QR puede seguir siendo el mismo al publicar nuevas versiones en la misma URL de GitHub Pages.
+- Favoritos, ocultas y cola son locales a cada navegador/dispositivo; no se sincronizan entre celulares sin un backend compartido.

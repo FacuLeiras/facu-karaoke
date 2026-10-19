@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Facu Karaoke · Cumple 2026</title>
+<meta name="theme-color" content="#17131f">
+<style>
+:root {
+  --bg:#0f0d13; --panel:#19151f; --panel2:#221b2b; --text:#f7f3fb; --muted:#bdb3c8;
+  --accent:#f5b642; --accent2:#7ee0c3; --line:#332a3e; --danger:#ff7b7b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top,#24172d 0,#0f0d13 38%);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:inherit}
+.wrap{max-width:1240px;margin:auto;padding:24px}
+.hero{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;padding:28px;border:1px solid var(--line);background:linear-gradient(135deg,#22152d,#16131c);border-radius:24px}
+h1{font-size:clamp(34px,6vw,64px);margin:0;line-height:.95}
+.subtitle{color:var(--muted);margin:12px 0 0;font-size:18px}
+.badge{display:inline-block;background:var(--accent);color:#1a1305;border-radius:999px;padding:6px 10px;font-weight:800;font-size:12px;margin-bottom:12px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.stat{background:#ffffff0b;border:1px solid var(--line);padding:10px 13px;border-radius:14px}
+.stat b{font-size:20px}
+.qrbox{background:white;padding:12px;border-radius:18px;min-width:180px;text-align:center;color:#111}
+#qr{width:156px;height:156px;margin:auto;display:grid;place-items:center}
+#qr img{max-width:100%}
+.qrsmall{font-size:11px;margin-top:8px;max-width:170px}
+.localwarn{display:none;color:#7a2b00;background:#ffe1c7;padding:8px;border-radius:9px;font-size:11px;margin-top:8px}
+.toolbar{position:sticky;top:0;z-index:10;margin:18px 0;padding:14px;background:#0f0d13e8;backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:18px}
+.searchrow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px}
+input,select,button{font:inherit}
+input,select{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px}
+button{border:0;border-radius:12px;padding:12px 14px;font-weight:750;cursor:pointer;background:var(--accent);color:#211607}
+button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{background:var(--panel);color:var(--muted);border:1px solid var(--line);padding:8px 11px;border-radius:999px}
+.chip.active{background:var(--accent2);color:#08231c;border-color:transparent}
+.sectiontitle{display:flex;justify-content:space-between;align-items:end;margin:24px 2px 10px}
+.sectiontitle h2{margin:0;font-size:22px}
+.sectiontitle span{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;grid-template-columns:auto 1fr;gap:12px;transition:.15s}
+.card:hover{transform:translateY(-1px);border-color:#665272}
+.num{width:44px;height:44px;border-radius:12px;background:#ffffff0c;display:grid;place-items:center;font-weight:900;color:var(--accent)}
+.songtitle{font-size:17px;font-weight:850;margin:0}
+.artist{color:var(--muted);font-size:13px;margin-top:3px}
+.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.pill{font-size:11px;padding:4px 7px;border-radius:999px;background:#ffffff0d;color:#d9cede;border:1px solid #ffffff0f}
+.actions{display:flex;gap:6px;margin-top:11px;flex-wrap:wrap}
+.actions button{padding:8px 10px;font-size:12px}
+.actions .yt{background:#ffdf86}
+.actions .copy{background:#2b2434;color:#fff;border:1px solid var(--line)}
+.actions .fav{background:#2b2434;color:#fff;border:1px solid var(--line)}
+.actions .fav.on{background:#f7cc60;color:#211607}
+.actions .queue{background:#183d34;color:#c8ffef;border:1px solid #285d50}
+.drawer{position:fixed;right:18px;bottom:18px;width:min(420px,calc(100vw - 36px));max-height:70vh;overflow:auto;background:#151119;border:1px solid var(--line);border-radius:20px;box-shadow:0 20px 70px #0008;z-index:20;display:none}
+.drawer.open{display:block}
+.drawerhead{position:sticky;top:0;background:#151119;padding:14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.queueitem{display:flex;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid #241e2b}
+.queueitem .grow{flex:1}
+.queueitem b{font-size:13px}
+.queueitem span{font-size:11px;color:var(--muted)}
+.smallbtn{padding:6px 8px!important;font-size:11px!important}
+.empty{padding:36px;text-align:center;color:var(--muted)}
+.footer{margin:36px 0 10px;padding:20px;color:var(--muted);border-top:1px solid var(--line);font-size:12px;line-height:1.5}
+.footer a{color:#ded3eb}
+@media(max-width:760px){
+  .hero{grid-template-columns:1fr} .qrbox{display:none} .searchrow{grid-template-columns:1fr 1fr} .searchrow input{grid-column:1/-1}
+}
+@media print{
+  .toolbar,.actions,.drawer,.qrbox button{display:none!important} body{background:white;color:black} .wrap{max-width:none;padding:8mm} .hero{background:white;color:black;border:1px solid #ccc} .subtitle,.artist,.sectiontitle span{color:#444} .card{break-inside:avoid;background:white;color:black;border:1px solid #ccc} .pill{color:#333;border:1px solid #bbb;background:white} .grid{grid-template-columns:repeat(2,1fr)} .qrbox{display:block;border:1px solid #ddd}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div>
+      <div class="badge">🎤 CUMPLE FACU 2026</div>
+      <h1>Elegí tu karaoke</h1>
+      <p class="subtitle">Buscá por canción, artista o número. Decile el número al host y arrancamos.</p>
+      <div class="stats">
+        <div class="stat"><b>145</b><br><small>canciones</small></div>
+        <div class="stat"><b>🇦🇷 + 🌎</b><br><small>Argentina & global</small></div>
+        <div class="stat"><b>💃</b><br><small>cumbia + cuarteto</small></div>
+      </div>
+    </div>
+    <div class="qrbox">
+      <div id="qr"></div>
+      <div class="qrsmall"><b>Escaneá y elegí desde tu celu</b><br><span id="qrUrl"></span></div>
+      <div class="localwarn" id="localwarn">Abriste el archivo localmente. Para que el QR funcione en otros celulares, publicalo en una URL (por ejemplo GitHub Pages) o pegá una URL pública abajo.</div>
+      <input id="customUrl" placeholder="URL pública opcional" style="width:100%;margin-top:8px;color:#111;background:#fff;border-color:#ddd;padding:8px">
+      <button onclick="refreshQR()" style="width:100%;margin-top:6px;padding:8px">Actualizar QR</button>
+    </div>
+  </section>
+
+  <section class="toolbar">
+    <div class="searchrow">
+      <input id="search" type="search" placeholder="🔎 Canción, artista o # (ej: 13, Soda, Gilda)">
+      <select id="genre"><option value="">Todos los géneros</option></select>
+      <button class="secondary" onclick="randomSong()">🎲 Elegime una</button>
+      <button class="secondary" onclick="toggleQueue()">🎶 Cola <span id="qcount">0</span></button>
+    </div>
+    <div class="filters" id="chips"></div>
+  </section>
+
+  <div class="sectiontitle"><h2 id="resultTitle">Catálogo completo</h2><span id="count"></span></div>
+  <main class="grid" id="grid"></main>
+
+  <div class="footer">
+    <b>Uso rápido:</b> cada canción tiene un botón <b>🎤 Abrir karaoke en YouTube</b>. También podés quitar temas de tu catálogo con <b>🗑️ Quitar de la lista</b>; quedan guardados en este navegador y se pueden restaurar desde <b>🗑️ Ocultas</b>.<br><br><b>Cómo está curado:</b> mezcla de clásicos de karaoke, canciones que hoy siguen apareciendo fuerte en Argentina y éxitos actuales 2026. La dificultad es orientativa.
+    Los botones “Karaoke” abren una búsqueda directa en YouTube con canción + artista + karaoke/letra, para evitar enlaces rotos y poder elegir la versión que mejor suene.<br><br>
+    <b>Fuentes de tendencia usadas para actualizar la selección (octubre 2026):</b><br>
+    Spotify / charts Argentina: https://nvvexstudios.com/charts/argentina · https://soundcharts.com/es/charts/spotify/argentina<br>
+    Billboard Global 200: https://ca.billboard.com/charts/billboard-global-200/2026-10-10<br>
+    Spotify sobre cumbia en Argentina: https://newsroom.spotify.com/2025-11-05/cumbia-argentina-most-listened-to-genre/
+  </div>
+</div>
+
+<div class="drawer" id="drawer">
+  <div class="drawerhead"><b>🎶 Cola del karaoke</b><button class="secondary smallbtn" onclick="toggleQueue()">Cerrar</button></div>
+  <div id="queueList"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const songs = [{"id": 1, "title": "De Música Ligera", "artist": "Soda Stereo", "genre": "Rock argentino", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Imprescindible"], "current": false}, {"id": 2, "title": "Persiana Americana", "artist": "Soda Stereo", "genre": "Rock argentino", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Imprescindible"], "current": false}, {"id": 3, "title": "Cuando Pase el Temblor", "artist": "Soda Stereo", "genre": "Rock argentino", "lang": "ES", "difficulty": "Media", "tags": ["Todos cantan"], "current": false}, {"id": 4, "title": "Lamento Boliviano", "artist": "Enanitos Verdes", "genre": "Rock argentino", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Imprescindible"], "current": false}, {"id": 5, "title": "La Muralla Verde", "artist": "Enanitos Verdes", "genre": "Rock argentino", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan"], "current": false}, {"id": 6, "title": "Mil Horas", "artist": "Los Abuelos de la Nada", "genre": "Rock argentino", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Imprescindible"], "current": false}, {"id": 7, "title": "Costumbres Argentinas", "artist": "Los Abuelos de la Nada", "genre": "Rock argentino", "lang": "ES", "difficulty": "Media", "tags": ["Todos cantan"], "current": false}, {"id": 8, "title": "Mariposa Tecknicolor", "artist": "Fito Páez", "genre": "Rock argentino", "lang": "ES", "difficulty": "Media", "tags": ["Todos cantan"], "current": false}, {"id": 9, "title": "11 y 6", "artist": "Fito Páez", "genre": "Rock argentino", "lang": "ES", "difficulty": "Media", "tags": ["Balada"], "current": false}, {"id": 10, "title": "Flaca", "artist": "Andrés Calamaro", "genre": "Rock argentino", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan"], "current": false}, {"id": 11, "title": "Sin Documentos", "artist": "Los Rodríguez", "genre": "Rock argentino", "lang": "ES", "difficulty": "Media", "tags": ["Fiesta"], "current": false}, {"id": 12, "title": "Muchacha (Ojos de Papel)", "artist": "Almendra", "genre": "Rock argentino", "lang": "ES", "difficulty": "Media", "tags": ["Balada"], "current": false}, {"id": 13, "title": "La Guitarra", "artist": "Los Auténticos Decadentes", "genre": "Rock argentino", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta", "Imprescindible"], "current": false}, {"id": 14, "title": "Corazón", "artist": "Los Auténticos Decadentes", "genre": "Rock argentino", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 15, "title": "Un Osito de Peluche de Taiwán", "artist": "Los Auténticos Decadentes", "genre": "Rock argentino", "lang": "ES", "difficulty": "Fácil", "tags": ["Fiesta"], "current": false}, {"id": 16, "title": "Matador", "artist": "Los Fabulosos Cadillacs", "genre": "Rock argentino", "lang": "ES", "difficulty": "Media", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 17, "title": "Siguiendo la Luna", "artist": "Los Fabulosos Cadillacs", "genre": "Rock argentino", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan"], "current": false}, {"id": 18, "title": "El Sensei", "artist": "Las Pastillas del Abuelo", "genre": "Rock argentino", "lang": "ES", "difficulty": "Media", "tags": ["Todos cantan"], "current": false}, {"id": 19, "title": "Tan Solo", "artist": "Los Piojos", "genre": "Rock argentino", "lang": "ES", "difficulty": "Media", "tags": ["Todos cantan"], "current": false}, {"id": 20, "title": "Bicho de Ciudad", "artist": "Los Piojos", "genre": "Rock argentino", "lang": "ES", "difficulty": "Media", "tags": ["Actual Argentina"], "current": true}, {"id": 21, "title": "Creo", "artist": "Callejeros", "genre": "Rock argentino", "lang": "ES", "difficulty": "Media", "tags": ["Actual Argentina", "Todos cantan"], "current": true}, {"id": 22, "title": "Por Mil Noches", "artist": "Airbag", "genre": "Rock argentino", "lang": "ES", "difficulty": "Media", "tags": ["Actual Argentina"], "current": true}, {"id": 23, "title": "Pensamientos", "artist": "Airbag", "genre": "Rock argentino", "lang": "ES", "difficulty": "Media", "tags": ["Actual Argentina"], "current": true}, {"id": 24, "title": "Obsesionario en La Mayor", "artist": "Tan Biónica", "genre": "Rock argentino", "lang": "ES", "difficulty": "Media", "tags": ["Actual Argentina", "Todos cantan"], "current": true}, {"id": 25, "title": "Ciudad Mágica", "artist": "Tan Biónica", "genre": "Rock argentino", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 26, "title": "Pasos al Costado", "artist": "Turf", "genre": "Rock argentino", "lang": "ES", "difficulty": "Fácil", "tags": ["Actual Argentina", "Todos cantan", "Fiesta"], "current": true}, {"id": 27, "title": "Para No Verte Más", "artist": "La Mosca Tsé-Tsé", "genre": "Rock argentino", "lang": "ES", "difficulty": "Fácil", "tags": ["Actual Argentina", "Todos cantan", "Fiesta"], "current": true}, {"id": 28, "title": "Nunca Quise", "artist": "Intoxicados", "genre": "Rock argentino", "lang": "ES", "difficulty": "Media", "tags": ["Actual Argentina"], "current": true}, {"id": 29, "title": "Un Ángel para Tu Soledad", "artist": "Patricio Rey y sus Redonditos de Ricota", "genre": "Rock argentino", "lang": "ES", "difficulty": "Media", "tags": ["Actual Argentina"], "current": true}, {"id": 30, "title": "Como Eran las Cosas", "artist": "Babasónicos", "genre": "Rock argentino", "lang": "ES", "difficulty": "Media", "tags": ["Actual Argentina"], "current": true}, {"id": 31, "title": "A las Nueve", "artist": "No Te Va Gustar", "genre": "Rock rioplatense", "lang": "ES", "difficulty": "Media", "tags": ["Actual Argentina"], "current": true}, {"id": 32, "title": "No Me Arrepiento de Este Amor", "artist": "Gilda", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta", "Imprescindible"], "current": false}, {"id": 33, "title": "Fuiste", "artist": "Gilda", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan"], "current": false}, {"id": 34, "title": "Corazón Valiente", "artist": "Gilda", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Media", "tags": ["Fiesta"], "current": false}, {"id": 35, "title": "Bombón Asesino", "artist": "Los Palmeras", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta", "Imprescindible"], "current": false}, {"id": 36, "title": "Yo Tomo", "artist": "Amar Azul", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Fácil", "tags": ["Fiesta", "Todos cantan"], "current": false}, {"id": 37, "title": "Mentirosa", "artist": "Ráfaga", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 38, "title": "Una Cerveza", "artist": "Ráfaga", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Fácil", "tags": ["Fiesta"], "current": false}, {"id": 39, "title": "Nunca Me Faltes", "artist": "Antonio Ríos", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan"], "current": false}, {"id": 40, "title": "Se Te Ve la Tanga", "artist": "Damas Gratis", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Fácil", "tags": ["Fiesta"], "current": false}, {"id": 41, "title": "Los Dueños del Pabellón", "artist": "Damas Gratis", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Media", "tags": ["Fiesta"], "current": false}, {"id": 42, "title": "Pibe Cantina", "artist": "Yerba Brava", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Fácil", "tags": ["Fiesta"], "current": false}, {"id": 43, "title": "Para la Gilada", "artist": "Meta Guacha", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Fácil", "tags": ["Actual Argentina", "Fiesta"], "current": true}, {"id": 44, "title": "Si Me Tomo una Cerveza", "artist": "Migrantes", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 45, "title": "Oye Mujer", "artist": "Ke Personajes", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Media", "tags": ["Fiesta"], "current": false}, {"id": 46, "title": "Pobre Corazón", "artist": "Ke Personajes", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Media", "tags": ["Fiesta"], "current": false}, {"id": 47, "title": "Con la Misma Moneda", "artist": "Karina", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Media", "tags": ["Todos cantan"], "current": false}, {"id": 48, "title": "Corazón Mentiroso", "artist": "Karina", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan"], "current": false}, {"id": 49, "title": "M.A (Mejores Amigos)", "artist": "BM", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Media", "tags": ["Fiesta"], "current": false}, {"id": 50, "title": "Pa' la Selección", "artist": "La T y La M", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Fácil", "tags": ["Fiesta", "Todos cantan"], "current": false}, {"id": 51, "title": "Amor de Vago", "artist": "La T y La M & Malandro", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Fácil", "tags": ["Actual Argentina", "Fiesta"], "current": true}, {"id": 52, "title": "Ya No Vuelvas", "artist": "Luck Ra, La K'onga & Ke Personajes", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Media", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 53, "title": "Tu Jardín con Enanitos (versión cumbia)", "artist": "Valen, Roze Oficial, Max Carra & RAMKY", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Media", "tags": ["Actual Argentina", "Fiesta"], "current": true}, {"id": 54, "title": "Si No Es Muy Tarde (versión cumbia)", "artist": "Luciano Pereyra, Ezequiel y La Clave, Un Poco de Ruido & Pinky SD", "genre": "Cumbia / tropical", "lang": "ES", "difficulty": "Media", "tags": ["Actual Argentina"], "current": true}, {"id": 55, "title": "Lo Mejor del Amor", "artist": "Rodrigo", "genre": "Cuarteto", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta", "Imprescindible"], "current": false}, {"id": 56, "title": "Soy Cordobés", "artist": "Rodrigo", "genre": "Cuarteto", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 57, "title": "Ocho Cuarenta", "artist": "Rodrigo", "genre": "Cuarteto", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 58, "title": "Fuego y Pasión", "artist": "Rodrigo", "genre": "Cuarteto", "lang": "ES", "difficulty": "Media", "tags": ["Fiesta"], "current": false}, {"id": 59, "title": "¿Quién Se Ha Tomado Todo el Vino?", "artist": "La Mona Jiménez", "genre": "Cuarteto", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 60, "title": "Beso a Beso", "artist": "La Mona Jiménez", "genre": "Cuarteto", "lang": "ES", "difficulty": "Fácil", "tags": ["Fiesta"], "current": false}, {"id": 61, "title": "Intento", "artist": "Ulises Bueno", "genre": "Cuarteto", "lang": "ES", "difficulty": "Media", "tags": ["Fiesta"], "current": false}, {"id": 62, "title": "Te Hubieras Ido Antes", "artist": "Ulises Bueno", "genre": "Cuarteto", "lang": "ES", "difficulty": "Media", "tags": ["Todos cantan"], "current": false}, {"id": 63, "title": "Te Mentiría", "artist": "La K'onga", "genre": "Cuarteto", "lang": "ES", "difficulty": "Media", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 64, "title": "Universo Paralelo", "artist": "La K'onga & Nahuel Pennisi", "genre": "Cuarteto", "lang": "ES", "difficulty": "Media", "tags": ["Dúo", "Todos cantan"], "current": false}, {"id": 65, "title": "Perfecta", "artist": "La K'onga", "genre": "Cuarteto", "lang": "ES", "difficulty": "Media", "tags": ["Fiesta"], "current": false}, {"id": 66, "title": "La Morocha", "artist": "Luck Ra & BM", "genre": "Cuarteto", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 67, "title": "Hola Perdida", "artist": "Luck Ra & KHEA", "genre": "Cuarteto", "lang": "ES", "difficulty": "Media", "tags": ["Fiesta"], "current": false}, {"id": 68, "title": "Tu Misterioso Alguien (cuarteto)", "artist": "Luck Ra & Miranda!", "genre": "Cuarteto", "lang": "ES", "difficulty": "Fácil", "tags": ["Actual 2026", "Todos cantan", "Fiesta"], "current": true}, {"id": 69, "title": "Fingí Demencia", "artist": "Luck Ra, The La Planta & La K'onga", "genre": "Cuarteto", "lang": "ES", "difficulty": "Media", "tags": ["Actual 2026", "Fiesta"], "current": true}, {"id": 70, "title": "Carita Triste", "artist": "Q' Lokura & Los Herrera", "genre": "Cuarteto", "lang": "ES", "difficulty": "Media", "tags": ["Actual 2026", "Fiesta"], "current": true}, {"id": 71, "title": "¿Quién Te Quiere Como Yo?", "artist": "Q' Lokura & Max Carra", "genre": "Cuarteto", "lang": "ES", "difficulty": "Media", "tags": ["Actual 2026"], "current": true}, {"id": 72, "title": "Puñaladas", "artist": "Q' Lokura, Amigo de Artistas & Lauta", "genre": "Cuarteto", "lang": "ES", "difficulty": "Media", "tags": ["Actual Argentina", "Actual 2026"], "current": true}, {"id": 73, "title": "No Podrás", "artist": "Eugenia Quevedo & Ángela Leiva", "genre": "Cuarteto", "lang": "ES", "difficulty": "Media", "tags": ["Actual 2026", "Dúo"], "current": true}, {"id": 74, "title": "Superestrella (cuarteto)", "artist": "DesaKTa2", "genre": "Cuarteto", "lang": "ES", "difficulty": "Media", "tags": ["Actual 2026", "Fiesta"], "current": true}, {"id": 75, "title": "Dime Tú (en vivo)", "artist": "Q' Lokura & Nahuel Pennisi", "genre": "Cuarteto", "lang": "ES", "difficulty": "Media", "tags": ["Actual Argentina", "Dúo"], "current": true}, {"id": 76, "title": "Vivir Mi Vida", "artist": "Marc Anthony", "genre": "Latino", "lang": "ES", "difficulty": "Media", "tags": ["Todos cantan", "Fiesta", "Imprescindible"], "current": false}, {"id": 77, "title": "La Vida Es un Carnaval", "artist": "Celia Cruz", "genre": "Latino", "lang": "ES", "difficulty": "Media", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 78, "title": "Color Esperanza", "artist": "Diego Torres", "genre": "Latino", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Imprescindible"], "current": false}, {"id": 79, "title": "La Camisa Negra", "artist": "Juanes", "genre": "Latino", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 80, "title": "A Dios le Pido", "artist": "Juanes", "genre": "Latino", "lang": "ES", "difficulty": "Media", "tags": ["Todos cantan"], "current": false}, {"id": 81, "title": "Limón y Sal", "artist": "Julieta Venegas", "genre": "Latino", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan"], "current": false}, {"id": 82, "title": "Me Voy", "artist": "Julieta Venegas", "genre": "Latino", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan"], "current": false}, {"id": 83, "title": "Colgando en Tus Manos", "artist": "Carlos Baute & Marta Sánchez", "genre": "Latino", "lang": "ES", "difficulty": "Fácil", "tags": ["Dúo", "Todos cantan", "Imprescindible"], "current": false}, {"id": 84, "title": "Rayando el Sol", "artist": "Maná", "genre": "Latino", "lang": "ES", "difficulty": "Media", "tags": ["Todos cantan"], "current": false}, {"id": 85, "title": "En el Muelle de San Blas", "artist": "Maná", "genre": "Latino", "lang": "ES", "difficulty": "Media", "tags": ["Todos cantan"], "current": false}, {"id": 86, "title": "Labios Compartidos", "artist": "Maná", "genre": "Latino", "lang": "ES", "difficulty": "Media", "tags": ["Todos cantan"], "current": false}, {"id": 87, "title": "La Tortura", "artist": "Shakira & Alejandro Sanz", "genre": "Latino", "lang": "ES", "difficulty": "Media", "tags": ["Dúo", "Todos cantan", "Fiesta"], "current": false}, {"id": 88, "title": "Ciega, Sordomuda", "artist": "Shakira", "genre": "Latino", "lang": "ES", "difficulty": "Media", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 89, "title": "Antología", "artist": "Shakira", "genre": "Latino", "lang": "ES", "difficulty": "Media", "tags": ["Balada"], "current": false}, {"id": 90, "title": "María", "artist": "Ricky Martin", "genre": "Latino", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 91, "title": "Livin' la Vida Loca", "artist": "Ricky Martin", "genre": "Latino", "lang": "EN/ES", "difficulty": "Media", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 92, "title": "Ahora Te Puedes Marchar", "artist": "Luis Miguel", "genre": "Latino", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 93, "title": "La Incondicional", "artist": "Luis Miguel", "genre": "Latino", "lang": "ES", "difficulty": "Media", "tags": ["Balada", "Todos cantan"], "current": false}, {"id": 94, "title": "Azul", "artist": "Cristian Castro", "genre": "Latino", "lang": "ES", "difficulty": "Media", "tags": ["Todos cantan"], "current": false}, {"id": 95, "title": "Noviembre Sin Ti", "artist": "Reik", "genre": "Latino", "lang": "ES", "difficulty": "Media", "tags": ["Balada"], "current": false}, {"id": 96, "title": "Entra en Mi Vida", "artist": "Sin Bandera", "genre": "Latino", "lang": "ES", "difficulty": "Media", "tags": ["Balada", "Dúo"], "current": false}, {"id": 97, "title": "Caraluna", "artist": "Bacilos", "genre": "Latino", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan"], "current": false}, {"id": 98, "title": "Cómo Te Atreves", "artist": "Morat", "genre": "Latino", "lang": "ES", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 99, "title": "Me Rehúso", "artist": "Danny Ocean", "genre": "Latino", "lang": "ES", "difficulty": "Fácil", "tags": ["Actual Argentina", "Todos cantan"], "current": true}, {"id": 100, "title": "Si Antes Te Hubiera Conocido", "artist": "KAROL G", "genre": "Latino", "lang": "ES", "difficulty": "Fácil", "tags": ["Fiesta", "Todos cantan"], "current": false}, {"id": 101, "title": "Borró Cassette", "artist": "Maluma", "genre": "Latino", "lang": "ES", "difficulty": "Media", "tags": ["Actual Argentina", "Fiesta"], "current": true}, {"id": 102, "title": "Tití Me Preguntó", "artist": "Bad Bunny", "genre": "Latino", "lang": "ES", "difficulty": "Media", "tags": ["Fiesta"], "current": false}, {"id": 103, "title": "Es un Secreto", "artist": "Plan B", "genre": "Latino", "lang": "ES", "difficulty": "Fácil", "tags": ["Actual Argentina", "Fiesta"], "current": true}, {"id": 104, "title": "TQG", "artist": "KAROL G & Shakira", "genre": "Latino", "lang": "ES", "difficulty": "Media", "tags": ["Dúo", "Fiesta"], "current": false}, {"id": 105, "title": "BbY WOW", "artist": "KAROL G, Judeline & rusowsky", "genre": "Latino", "lang": "ES", "difficulty": "Media", "tags": ["Actual 2026", "Top global"], "current": true}, {"id": 106, "title": "LA GRACIOSA", "artist": "Quevedo & Elvis Crespo", "genre": "Latino", "lang": "ES", "difficulty": "Media", "tags": ["Actual 2026", "Top global", "Fiesta"], "current": true}, {"id": 107, "title": "I Want It That Way", "artist": "Backstreet Boys", "genre": "Global inglés", "lang": "EN", "difficulty": "Fácil", "tags": ["Todos cantan", "Imprescindible"], "current": false}, {"id": 108, "title": "Don't Stop Me Now", "artist": "Queen", "genre": "Global inglés", "lang": "EN", "difficulty": "Media", "tags": ["Todos cantan", "Fiesta", "Imprescindible"], "current": false}, {"id": 109, "title": "I Want to Break Free", "artist": "Queen", "genre": "Global inglés", "lang": "EN", "difficulty": "Fácil", "tags": ["Todos cantan"], "current": false}, {"id": 110, "title": "Bohemian Rhapsody", "artist": "Queen", "genre": "Global inglés", "lang": "EN", "difficulty": "Desafío", "tags": ["Todos cantan", "Épica"], "current": false}, {"id": 111, "title": "Livin' on a Prayer", "artist": "Bon Jovi", "genre": "Global inglés", "lang": "EN", "difficulty": "Media", "tags": ["Todos cantan", "Imprescindible"], "current": false}, {"id": 112, "title": "Summer of '69", "artist": "Bryan Adams", "genre": "Global inglés", "lang": "EN", "difficulty": "Fácil", "tags": ["Todos cantan"], "current": false}, {"id": 113, "title": "Sweet Caroline", "artist": "Neil Diamond", "genre": "Global inglés", "lang": "EN", "difficulty": "Fácil", "tags": ["Todos cantan", "Imprescindible"], "current": false}, {"id": 114, "title": "Take Me Home, Country Roads", "artist": "John Denver", "genre": "Global inglés", "lang": "EN", "difficulty": "Fácil", "tags": ["Todos cantan"], "current": false}, {"id": 115, "title": "Wonderwall", "artist": "Oasis", "genre": "Global inglés", "lang": "EN", "difficulty": "Fácil", "tags": ["Top global", "Todos cantan", "Imprescindible"], "current": true}, {"id": 116, "title": "Don't Look Back in Anger", "artist": "Oasis", "genre": "Global inglés", "lang": "EN", "difficulty": "Media", "tags": ["Todos cantan"], "current": false}, {"id": 117, "title": "Zombie", "artist": "The Cranberries", "genre": "Global inglés", "lang": "EN", "difficulty": "Fácil", "tags": ["Todos cantan", "Imprescindible"], "current": false}, {"id": 118, "title": "Dancing Queen", "artist": "ABBA", "genre": "Global inglés", "lang": "EN", "difficulty": "Media", "tags": ["Todos cantan", "Fiesta", "Imprescindible"], "current": false}, {"id": 119, "title": "Mamma Mia", "artist": "ABBA", "genre": "Global inglés", "lang": "EN", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 120, "title": "Girls Just Want to Have Fun", "artist": "Cyndi Lauper", "genre": "Global inglés", "lang": "EN", "difficulty": "Media", "tags": ["Fiesta", "Todos cantan"], "current": false}, {"id": 121, "title": "Take on Me", "artist": "a-ha", "genre": "Global inglés", "lang": "EN", "difficulty": "Desafío", "tags": ["Todos cantan"], "current": false}, {"id": 122, "title": "Every Breath You Take", "artist": "The Police", "genre": "Global inglés", "lang": "EN", "difficulty": "Fácil", "tags": ["Todos cantan"], "current": false}, {"id": 123, "title": "Mr. Brightside", "artist": "The Killers", "genre": "Global inglés", "lang": "EN", "difficulty": "Media", "tags": ["Top global", "Todos cantan", "Fiesta"], "current": true}, {"id": 124, "title": "Sex on Fire", "artist": "Kings of Leon", "genre": "Global inglés", "lang": "EN", "difficulty": "Media", "tags": ["Fiesta"], "current": false}, {"id": 125, "title": "Basket Case", "artist": "Green Day", "genre": "Global inglés", "lang": "EN", "difficulty": "Media", "tags": ["Fiesta", "Todos cantan"], "current": false}, {"id": 126, "title": "Wannabe", "artist": "Spice Girls", "genre": "Global inglés", "lang": "EN", "difficulty": "Fácil", "tags": ["Fiesta", "Todos cantan"], "current": false}, {"id": 127, "title": "...Baby One More Time", "artist": "Britney Spears", "genre": "Global inglés", "lang": "EN", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 128, "title": "Teenage Dream", "artist": "Katy Perry", "genre": "Global inglés", "lang": "EN", "difficulty": "Media", "tags": ["Fiesta"], "current": false}, {"id": 129, "title": "Party in the U.S.A.", "artist": "Miley Cyrus", "genre": "Global inglés", "lang": "EN", "difficulty": "Fácil", "tags": ["Fiesta", "Todos cantan"], "current": false}, {"id": 130, "title": "Shallow", "artist": "Lady Gaga & Bradley Cooper", "genre": "Global inglés", "lang": "EN", "difficulty": "Desafío", "tags": ["Dúo", "Imprescindible"], "current": false}, {"id": 131, "title": "Rolling in the Deep", "artist": "Adele", "genre": "Global inglés", "lang": "EN", "difficulty": "Desafío", "tags": ["Todos cantan"], "current": false}, {"id": 132, "title": "Complicated", "artist": "Avril Lavigne", "genre": "Global inglés", "lang": "EN", "difficulty": "Fácil", "tags": ["Todos cantan"], "current": false}, {"id": 133, "title": "Torn", "artist": "Natalie Imbruglia", "genre": "Global inglés", "lang": "EN", "difficulty": "Fácil", "tags": ["Todos cantan"], "current": false}, {"id": 134, "title": "Love Story", "artist": "Taylor Swift", "genre": "Global inglés", "lang": "EN", "difficulty": "Fácil", "tags": ["Todos cantan"], "current": false}, {"id": 135, "title": "I Will Survive", "artist": "Gloria Gaynor", "genre": "Global inglés", "lang": "EN", "difficulty": "Media", "tags": ["Todos cantan", "Fiesta"], "current": false}, {"id": 136, "title": "Don't Stop Believin'", "artist": "Journey", "genre": "Global inglés", "lang": "EN", "difficulty": "Media", "tags": ["Todos cantan", "Épica"], "current": false}, {"id": 137, "title": "Sweet Child o' Mine", "artist": "Guns N' Roses", "genre": "Global inglés", "lang": "EN", "difficulty": "Desafío", "tags": ["Todos cantan"], "current": false}, {"id": 138, "title": "Iris", "artist": "Goo Goo Dolls", "genre": "Global inglés", "lang": "EN", "difficulty": "Media", "tags": ["Top global", "Todos cantan"], "current": true}, {"id": 139, "title": "Billie Jean", "artist": "Michael Jackson", "genre": "Global inglés", "lang": "EN", "difficulty": "Media", "tags": ["Top global", "Todos cantan", "Fiesta"], "current": true}, {"id": 140, "title": "Die With a Smile", "artist": "Lady Gaga & Bruno Mars", "genre": "Global inglés", "lang": "EN", "difficulty": "Desafío", "tags": ["Top global", "Dúo"], "current": true}, {"id": 141, "title": "Training Season", "artist": "Dua Lipa", "genre": "Global inglés", "lang": "EN", "difficulty": "Media", "tags": ["Actual 2026", "Top global", "Fiesta"], "current": true}, {"id": 142, "title": "Ordinary", "artist": "Alex Warren", "genre": "Global inglés", "lang": "EN", "difficulty": "Media", "tags": ["Actual 2026", "Top global"], "current": true}, {"id": 143, "title": "Beauty and a Beat", "artist": "Justin Bieber feat. Nicki Minaj", "genre": "Global inglés", "lang": "EN", "difficulty": "Media", "tags": ["Top global", "Fiesta"], "current": true}, {"id": 144, "title": "Golden", "artist": "HUNTR/X: EJAE, Audrey Nuna & REI AMI", "genre": "Global inglés", "lang": "EN", "difficulty": "Desafío", "tags": ["Actual 2026", "Top global"], "current": true}, {"id": 145, "title": "Wake Me Up Before You Go-Go", "artist": "Wham!", "genre": "Global inglés", "lang": "EN", "difficulty": "Fácil", "tags": ["Todos cantan", "Fiesta"], "current": false}];
+const grid = document.getElementById('grid');
+const search = document.getElementById('search');
+const genre = document.getElementById('genre');
+const chipsEl = document.getElementById('chips');
+let activeChip = '';
+let favorites = new Set(JSON.parse(localStorage.getItem('karaokeFavs')||'[]'));
+let hiddenSongs = new Set(JSON.parse(localStorage.getItem('karaokeHidden')||'[]'));
+let queue = JSON.parse(localStorage.getItem('karaokeQueue')||'[]');
+
+const chipOptions = [
+  ['','Todo'], ['Imprescindible','🔥 Imprescindibles'], ['Todos cantan','👥 Todos cantan'],
+  ['Fiesta','💃 Fiesta'], ['Dúo','🎤🎤 Dúos'], ['Actual 2026','✨ Actual 2026'],
+  ['Actual Argentina','🇦🇷 Hoy en Argentina'], ['Top global','🌎 Top global'], ['FAV','⭐ Mis favoritos'], ['HIDDEN','🗑️ Ocultas']
+];
+
+for (const g of [...new Set(songs.map(s=>s.genre))]) {
+  const o=document.createElement('option'); o.value=g; o.textContent=g; genre.appendChild(o);
+}
+chipOptions.forEach(([v,l],i)=>{
+  const b=document.createElement('button'); b.className='chip'+(i===0?' active':''); b.textContent=l;
+  b.onclick=()=>{activeChip=v; [...chipsEl.children].forEach(x=>x.classList.remove('active')); b.classList.add('active'); render();};
+  chipsEl.appendChild(b);
+});
+
+function ytUrl(s){
+  const q = `${s.artist} ${s.title} karaoke letra`;
+  return 'https://www.youtube.com/results?search_query='+encodeURIComponent(q);
+}
+function escapeHtml(str){return String(str).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+function card(s){
+  const tags = [s.genre,s.lang,s.difficulty,...s.tags].slice(0,5).map(t=>`<span class="pill">${escapeHtml(t)}</span>`).join('');
+  const fav = favorites.has(s.id) ? ' on' : '';
+  return `<article class="card" id="song-${s.id}">
+    <div class="num">#${s.id}</div>
+    <div>
+      <h3 class="songtitle">${escapeHtml(s.title)}</h3>
+      <div class="artist">${escapeHtml(s.artist)}</div>
+      <div class="meta">${tags}</div>
+      <div class="actions">
+        <button class="yt" onclick="window.open('${ytUrl(s)}','_blank')">🎤 Abrir karaoke en YouTube</button>
+        <button class="queue" onclick="addQueue(${s.id})">＋ Cola</button>
+        <button class="copy" onclick="copyReq(${s.id})">📋 Pedido</button>
+        <button class="fav${fav}" onclick="toggleFav(${s.id})">★</button>
+        <button class="copy" onclick="toggleHidden(${s.id})">${hiddenSongs.has(s.id) ? '↩ Restaurar' : '🗑️ Quitar de la lista'}</button>
+      </div>
+    </div>
+  </article>`;
+}
+function filtered(){
+  const q=search.value.trim().toLowerCase().replace(/^#/,'');
+  return songs.filter(s=>{
+    const hay=`${s.id} ${s.title} ${s.artist} ${s.genre} ${s.tags.join(' ')}`.toLowerCase();
+    const qok=!q || hay.includes(q);
+    const gok=!genre.value || s.genre===genre.value;
+    const hidden = hiddenSongs.has(s.id);
+    let cok = true;
+    if(activeChip==='FAV') cok = favorites.has(s.id) && !hidden;
+    else if(activeChip==='HIDDEN') cok = hidden;
+    else if(activeChip) cok = s.tags.includes(activeChip) && !hidden;
+    else cok = !hidden;
+    return qok&&gok&&cok;
+  });
+}
+function render(){
+  const list=filtered();
+  grid.innerHTML=list.map(card).join('') || '<div class="empty">No encontré canciones con esos filtros.</div>';
+  document.getElementById('count').textContent=`${list.length} canciones`;
+  document.getElementById('resultTitle').textContent= activeChip || genre.value || search.value ? 'Resultados' : 'Catálogo completo';
+}
+function toggleFav(id){
+  favorites.has(id)?favorites.delete(id):favorites.add(id);
+  localStorage.setItem('karaokeFavs',JSON.stringify([...favorites])); render();
+}
+function toggleHidden(id){
+  if(hiddenSongs.has(id)) hiddenSongs.delete(id); else {
+    hiddenSongs.add(id);
+    queue = queue.filter(x=>x!==id);
+  }
+  localStorage.setItem('karaokeHidden',JSON.stringify([...hiddenSongs]));
+  localStorage.setItem('karaokeQueue',JSON.stringify(queue));
+  updateQueue();
+  render();
+}
+async function copyReq(id){
+  const s=songs.find(x=>x.id===id); const txt=`Karaoke #${s.id} — ${s.title} — ${s.artist}`;
+  try{await navigator.clipboard.writeText(txt); alert('Copiado: '+txt)}catch{prompt('Copiá este pedido:',txt)}
+}
+function addQueue(id){
+  if(!queue.includes(id)) queue.push(id);
+  localStorage.setItem('karaokeQueue',JSON.stringify(queue)); updateQueue(); document.getElementById('drawer').classList.add('open');
+}
+function removeQueue(id){queue=queue.filter(x=>x!==id);localStorage.setItem('karaokeQueue',JSON.stringify(queue));updateQueue();}
+function upQueue(i){if(i<=0)return; [queue[i-1],queue[i]]=[queue[i],queue[i-1]];localStorage.setItem('karaokeQueue',JSON.stringify(queue));updateQueue();}
+function updateQueue(){
+  document.getElementById('qcount').textContent=queue.length;
+  const el=document.getElementById('queueList');
+  if(!queue.length){el.innerHTML='<div class="empty">La cola está vacía.</div>';return;}
+  el.innerHTML=queue.map((id,i)=>{
+    const s=songs.find(x=>x.id===id);
+    return `<div class="queueitem"><b>#${i+1}</b><div class="grow"><b>${escapeHtml(s.title)}</b><br><span>${escapeHtml(s.artist)} · catálogo #${s.id}</span></div>
+    <button class="yt smallbtn" onclick="window.open('${ytUrl(s)}','_blank')">▶</button>
+    <button class="secondary smallbtn" onclick="upQueue(${i})">↑</button>
+    <button class="secondary smallbtn" onclick="removeQueue(${id})">✕</button></div>`;
+  }).join('');
+}
+function toggleQueue(){document.getElementById('drawer').classList.toggle('open');}
+function randomSong(){
+  const list=filtered(); if(!list.length)return; const s=list[Math.floor(Math.random()*list.length)];
+  document.getElementById('song-'+s.id)?.scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(()=>alert(`🎲 #${s.id} — ${s.title} — ${s.artist}`),350);
+}
+search.addEventListener('input',render); genre.addEventListener('change',render);
+updateQueue(); render();
+
+function refreshQR(){
+  const custom=document.getElementById('customUrl').value.trim();
+  let url=custom || location.href.split('#')[0];
+  const local=location.protocol==='file:' && !custom;
+  document.getElementById('localwarn').style.display=local?'block':'none';
+  document.getElementById('qrUrl').textContent=local?'Publicalo para compartir':url.replace(/^https?:\/\//,'').slice(0,38);
+  const el=document.getElementById('qr'); el.innerHTML='';
+  if(typeof QRCode!=='undefined') new QRCode(el,{text:url,width:156,height:156,correctLevel:QRCode.CorrectLevel.M});
+  else el.textContent='QR no disponible';
+}
+window.addEventListener('load',refreshQR);
+</script>
+</body>
+</html>
