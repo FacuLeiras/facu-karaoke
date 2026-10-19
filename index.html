@@ -87,10 +87,7 @@ button.secondary{background:var(--panel2);color:var(--text);border:1px solid var
     </div>
     <div class="qrbox">
       <div id="qr"></div>
-      <div class="qrsmall"><b>Escaneá y elegí desde tu celu</b><br><span id="qrUrl"></span></div>
-      <div class="localwarn" id="localwarn">Abriste el archivo localmente. Para que el QR funcione en otros celulares, publicalo en una URL (por ejemplo GitHub Pages) o pegá una URL pública abajo.</div>
-      <input id="customUrl" placeholder="URL pública opcional" style="width:100%;margin-top:8px;color:#111;background:#fff;border-color:#ddd;padding:8px">
-      <button onclick="refreshQR()" style="width:100%;margin-top:6px;padding:8px">Actualizar QR</button>
+      <div class="qrsmall"><b>Escaneá y elegí desde tu celu</b><br><span id="qrUrl">faculeiras.github.io/facu-karaoke/</span></div>
     </div>
   </section>
 
@@ -240,11 +237,7 @@ search.addEventListener('input',render); genre.addEventListener('change',render)
 updateQueue(); render();
 
 function refreshQR(){
-  const custom=document.getElementById('customUrl').value.trim();
-  let url=custom || location.href.split('#')[0];
-  const local=location.protocol==='file:' && !custom;
-  document.getElementById('localwarn').style.display=local?'block':'none';
-  document.getElementById('qrUrl').textContent=local?'Publicalo para compartir':url.replace(/^https?:\/\//,'').slice(0,38);
+  const url='https://faculeiras.github.io/facu-karaoke/';
   const el=document.getElementById('qr'); el.innerHTML='';
   if(typeof QRCode!=='undefined') new QRCode(el,{text:url,width:156,height:156,correctLevel:QRCode.CorrectLevel.M});
   else el.textContent='QR no disponible';
