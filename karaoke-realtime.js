@@ -44,7 +44,7 @@
     <div class="rt-dialog">
       <h3>🎤 Pedir canción</h3>
       <div id="rtSongSummary"></div>
-      <label>¿Quién canta?</label>
+      <label>¿Quién sos?</label>
       <input id="rtSinger" maxlength="80" placeholder="Tu nombre">
       <div id="rtCustomFields" style="display:none">
         <label>Canción</label>
