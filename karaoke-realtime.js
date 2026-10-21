@@ -187,8 +187,7 @@
     session = s;
     if (!session) { isHost = false; return; }
 
-    const { data, error } = await db.rpc("is_karaoke_host");
-    isHost = !error && data === true;
+    isHost = String(session?.user?.email || "").toLowerCase() === "faculeiras@hotmail.com";
 
     const hb = document.getElementById("hostBtn");
     if (hb) hb.textContent = isHost ? "🟢 Host" : "🔐 Host";
