@@ -106,7 +106,7 @@ button.secondary{background:var(--panel2);color:var(--text);border:1px solid var
 
   <div class="footer">
     <b>Uso rápido:</b> cada canción tiene un botón <b>🎤 Abrir karaoke en YouTube</b>. También podés quitar temas de tu catálogo con <b>🗑️ Quitar de la lista</b>; quedan guardados en este navegador y se pueden restaurar desde <b>🗑️ Ocultas</b>.<br><br><b>Cómo está curado:</b> mezcla de clásicos de karaoke, canciones que hoy siguen apareciendo fuerte en Argentina y éxitos actuales 2026. La dificultad es orientativa.
-    “🎤 Karaoke FULL” busca una versión instrumental/karaoke. “🎙️ Con guía / coros” busca versiones con voz guía suave, backing vocals o coros, para cuando quieran más apoyo. Ambos abren búsquedas de YouTube para evitar enlaces rotos y elegir la versión que mejor suene.<br><br>
+    “🎤 FULL sincronizado” prioriza videos donde la letra avanza visualmente con la canción (para inglés, primero busca Sing King). “🎙️ Guía/coros · KaraFun” abre KaraFun, que permite regular por separado voz principal/guía y coros; podés dejar la voz principal apenas audible para tener apoyo sin cantar encima del original.<br><br>
     <b>Fuentes de tendencia usadas para actualizar la selección (octubre 2026):</b><br>
     Spotify Global diario (22/10/2026): https://kworb.net/spotify/country/global_daily.html<br>
     Spotify sobre cumbia en Argentina: https://newsroom.spotify.com/2025-11-05/cumbia-argentina-most-listened-to-genre/
@@ -149,14 +149,16 @@ chipOptions.forEach(([v,l],i)=>{
 });
 
 function ytUrl(s){
-  const q = `${s.artist} ${s.title} karaoke letra instrumental`;
+  // Prioridad: videos con letra sincronizada/progresiva.
+  // Sing King funciona especialmente bien para catálogo internacional.
+  const q = s.lang==='EN'
+    ? `${s.artist} ${s.title} Sing King karaoke`
+    : `${s.artist} ${s.title} karaoke letra sincronizada colores`;
   return 'https://www.youtube.com/results?search_query='+encodeURIComponent(q);
 }
-function ytGuideUrl(s){
-  const q = s.lang==='EN'
-    ? `${s.artist} ${s.title} karaoke backing vocals guide vocals`
-    : `${s.artist} ${s.title} karaoke voz guía coros`;
-  return 'https://www.youtube.com/results?search_query='+encodeURIComponent(q);
+function karaFunUrl(s){
+  // KaraFun permite controlar por separado voz principal/guía y coros.
+  return 'https://www.karafun.com/search/?query='+encodeURIComponent(`${s.artist} ${s.title}`);
 }
 function escapeHtml(str){return String(str).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 function card(s){
@@ -169,8 +171,8 @@ function card(s){
       <div class="artist">${escapeHtml(s.artist)}</div>
       <div class="meta">${tags}</div>
       <div class="actions">
-        <button class="yt" onclick="window.open('${ytUrl(s)}','_blank')">🎤 Karaoke FULL</button>
-        <button class="copy" onclick="window.open('${ytGuideUrl(s)}','_blank')">🎙️ Con guía / coros</button>
+        <button class="yt" onclick="window.open('${ytUrl(s)}','_blank')">🎤 FULL sincronizado</button>
+        <button class="copy" onclick="window.open('${karaFunUrl(s)}','_blank')">🎙️ Guía/coros · KaraFun</button>
         <button class="queue" onclick="addQueue(${s.id})">＋ Cola</button>
         <button class="copy" onclick="copyReq(${s.id})">📋 Pedido</button>
         <button class="fav${fav}" onclick="toggleFav(${s.id})">★</button>
