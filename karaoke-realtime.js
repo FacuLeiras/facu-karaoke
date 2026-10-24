@@ -252,7 +252,7 @@
     const controls = isHost ? `
       <div class="rt-host-actions">
         <button class="yt" onclick="window.open('${r.youtube_url}','_blank')">🎤 FULL</button>
-        <button class="secondary" onclick="window.open(ytGuideSearch('${String(r.title).replace(/'/g,"\'")}','${String(r.artist||"").replace(/'/g,"\'")}'),'_blank')">🎙️ Guía/coros</button>
+        <button class="secondary" onclick="hostGuide(${r.id})">🎙️ Guía/coros</button>
         ${r.status !== "current" ? `<button class="queue" onclick="hostCurrent(${r.id})">🎤 Ahora</button>` : ""}
         ${r.status === "waiting" ? `<button class="secondary" onclick="hostMove(${r.id},-1)">↑</button><button class="secondary" onclick="hostMove(${r.id},1)">↓</button>` : ""}
         <button class="secondary" onclick="hostDone(${r.id})">✅ Cantada</button>
@@ -266,6 +266,12 @@
       ${controls}
     </div>`;
   }
+
+  window.hostGuide = (id) => {
+    const r = remoteQueue.find(x => x.id === id);
+    if (!r) return;
+    window.open(ytGuideSearch(r.title, r.artist || ""), "_blank");
+  };
 
   window.hostCurrent = async (id) => {
     if (!isHost) return;
