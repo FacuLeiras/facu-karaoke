@@ -60,13 +60,13 @@
   document.body.appendChild(modal);
 
   function ytSearch(title, artist="") {
-    const q = [artist, title, "karaoke letra instrumental"].filter(Boolean).join(" ");
+    const q = [artist, title, "karaoke letra sincronizada colores"].filter(Boolean).join(" ");
     return "https://www.youtube.com/results?search_query=" + encodeURIComponent(q);
   }
 
-  function ytGuideSearch(title, artist="") {
-    const q = [artist, title, "karaoke voz guía coros backing vocals"].filter(Boolean).join(" ");
-    return "https://www.youtube.com/results?search_query=" + encodeURIComponent(q);
+  function karaFunSearch(title, artist="") {
+    const q = [artist, title].filter(Boolean).join(" ");
+    return "https://www.karafun.com/search/?query=" + encodeURIComponent(q);
   }
 
   function openRequest(song=null) {
@@ -251,8 +251,8 @@
     const badge = r.source === "custom" ? " · 🆕 fuera del catálogo" : "";
     const controls = isHost ? `
       <div class="rt-host-actions">
-        <button class="yt" onclick="window.open('${r.youtube_url}','_blank')">🎤 FULL</button>
-        <button class="secondary" onclick="hostGuide(${r.id})">🎙️ Guía/coros</button>
+        <button class="yt" onclick="window.open('${r.youtube_url}','_blank')">🎤 FULL sync</button>
+        <button class="secondary" onclick="hostGuide(${r.id})">🎙️ Guía/coros · KaraFun</button>
         ${r.status !== "current" ? `<button class="queue" onclick="hostCurrent(${r.id})">🎤 Ahora</button>` : ""}
         ${r.status === "waiting" ? `<button class="secondary" onclick="hostMove(${r.id},-1)">↑</button><button class="secondary" onclick="hostMove(${r.id},1)">↓</button>` : ""}
         <button class="secondary" onclick="hostDone(${r.id})">✅ Cantada</button>
@@ -270,7 +270,7 @@
   window.hostGuide = (id) => {
     const r = remoteQueue.find(x => x.id === id);
     if (!r) return;
-    window.open(ytGuideSearch(r.title, r.artist || ""), "_blank");
+    window.open(karaFunSearch(r.title, r.artist || ""), "_blank");
   };
 
   window.hostCurrent = async (id) => {
@@ -361,7 +361,7 @@
     if (typeof render === "function") render();
   }
 
-  window.ytGuideSearch = ytGuideSearch;
+  window.karaFunSearch = karaFunSearch;
 
   async function init() {
     installButtons();
