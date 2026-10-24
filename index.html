@@ -156,7 +156,9 @@ function ytUrl(s){
     : `${s.artist} ${s.title} karaoke letra sincronizada colores`;
   return 'https://www.youtube.com/results?search_query='+encodeURIComponent(q);
 }
-async function openSinga(s){
+async function openSinga(id){
+  const s = songs.find(x=>x.id===id);
+  if(!s) return alert('No encontré esa canción en el catálogo.');
   const q = `${s.artist} ${s.title}`;
   try { await navigator.clipboard.writeText(q); } catch {}
   window.open('https://singa.com/songs','_blank');
@@ -172,7 +174,7 @@ function card(s){
       <div class="artist">${escapeHtml(s.artist)}</div>
       <div class="meta">${tags}</div>
       <div class="actions">
-        <button class="yt" onclick="openSinga(s)">🎤 Singa · sync + voz guía</button>
+        <button class="yt" onclick="openSinga(${s.id})">🎤 Singa · sync + voz guía</button>
         <button class="copy" onclick="window.open('${ytUrl(s)}','_blank')">▶ YouTube sync</button>
         <button class="queue" onclick="addQueue(${s.id})">＋ Cola</button>
         <button class="copy" onclick="copyReq(${s.id})">📋 Pedido</button>
