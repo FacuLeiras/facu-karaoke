@@ -106,7 +106,7 @@ button.secondary{background:var(--panel2);color:var(--text);border:1px solid var
 
   <div class="footer">
     <b>Uso rápido:</b> cada canción tiene un botón <b>🎤 Abrir karaoke en YouTube</b>. También podés quitar temas de tu catálogo con <b>🗑️ Quitar de la lista</b>; quedan guardados en este navegador y se pueden restaurar desde <b>🗑️ Ocultas</b>.<br><br><b>Cómo está curado:</b> mezcla de clásicos de karaoke, canciones que hoy siguen apareciendo fuerte en Argentina y éxitos actuales 2026. La dificultad es orientativa.
-    “🎤 FULL sincronizado” prioriza videos donde la letra avanza visualmente con la canción (para inglés, primero busca Sing King). “🎙️ Guía/coros · KaraFun” abre KaraFun, que permite regular por separado voz principal/guía y coros; podés dejar la voz principal apenas audible para tener apoyo sin cantar encima del original.<br><br>
+    “🎤 FULL sync · KaraFun” es la opción prioritaria porque usa letras sincronizadas. “🎙️ Guía/coros · KaraFun” abre la misma pista para regular por separado voz principal/guía y coros; dejá la voz principal baja para tener apoyo sin cantar encima del original. “▶ YouTube sync” queda como alternativa gratuita y prioriza búsquedas con letra sincronizada/progresiva.<br><br>
     <b>Fuentes de tendencia usadas para actualizar la selección (octubre 2026):</b><br>
     Spotify Global diario (22/10/2026): https://kworb.net/spotify/country/global_daily.html<br>
     Spotify sobre cumbia en Argentina: https://newsroom.spotify.com/2025-11-05/cumbia-argentina-most-listened-to-genre/
@@ -171,8 +171,9 @@ function card(s){
       <div class="artist">${escapeHtml(s.artist)}</div>
       <div class="meta">${tags}</div>
       <div class="actions">
-        <button class="yt" onclick="window.open('${ytUrl(s)}','_blank')">🎤 FULL sincronizado</button>
+        <button class="yt" onclick="window.open('${karaFunUrl(s)}','_blank')">🎤 FULL sync · KaraFun</button>
         <button class="copy" onclick="window.open('${karaFunUrl(s)}','_blank')">🎙️ Guía/coros · KaraFun</button>
+        <button class="copy" onclick="window.open('${ytUrl(s)}','_blank')">▶ YouTube sync</button>
         <button class="queue" onclick="addQueue(${s.id})">＋ Cola</button>
         <button class="copy" onclick="copyReq(${s.id})">📋 Pedido</button>
         <button class="fav${fav}" onclick="toggleFav(${s.id})">★</button>
