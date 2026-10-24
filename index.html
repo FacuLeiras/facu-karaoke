@@ -132,7 +132,7 @@ let hiddenSongs = new Set(JSON.parse(localStorage.getItem('karaokeHidden')||'[]'
 let queue = JSON.parse(localStorage.getItem('karaokeQueue')||'[]');
 
 const chipOptions = [
-  ['','Todo'],
+  ['','Todo'], ['REC','🔥 Recomendadas'],
   ['CAT:Cumbia','💃 Cumbia'], ['CAT:Cuarteto','🪗 Cuarteto'], ['CAT:Pop','✨ Pop'],
   ['CAT:Latino','🌴 Latino'], ['CAT:Inglés','🌎 Inglés'],
   ['AR50','🇦🇷 Top 50 Argentina'],
@@ -182,6 +182,38 @@ function quickCategoryMatch(s,cat){
   if(cat==='Pop') return s.tags.includes('Pop');
   return true;
 }
+function karaokeScore(s){
+  let score=0;
+  if(s.tags.includes('Imprescindible')) score+=12;
+  if(s.tags.includes('Todos cantan')) score+=10;
+  if(s.tags.includes('Fiesta')) score+=7;
+  if(s.tags.includes('Dúo')) score+=3;
+  if(s.tags.includes('Pop')) score+=2;
+
+  if(s.difficulty==='Fácil') score+=4;
+  else if(s.difficulty==='Media') score+=1;
+  else if(s.difficulty==='Difícil') score-=3;
+
+  if(s.tags.includes('Actual 2026')) score+=4;
+  if(s.tags.includes('Actual Argentina')) score+=4;
+  if(s.tags.includes('Top global')) score+=2;
+  if(s.current) score+=2;
+
+  // La actualidad suma, pero no manda: un #1 difícil de cantar
+  // no debe superar automáticamente a un clásico de karaoke.
+  if(s.chartRank) score += Math.max(0, 7 - ((s.chartRank-1) * 7 / 49));
+
+  return score;
+}
+const recommendedIds = new Set(
+  [...songs]
+    .map(s=>({id:s.id,score:karaokeScore(s)}))
+    .filter(x=>x.score>=10)
+    .sort((a,b)=>b.score-a.score)
+    .slice(0,50)
+    .map(x=>x.id)
+);
+
 function actualityScore(s){
   if(s.chartRank) return 20000 - (s.chartRank * 200);
   let score=0;
@@ -202,18 +234,24 @@ function filtered(){
     let cok = true;
     if(activeChip==='FAV') cok = favorites.has(s.id) && !hidden;
     else if(activeChip==='HIDDEN') cok = hidden;
+    else if(activeChip==='REC') cok = recommendedIds.has(s.id) && !hidden;
     else if(activeChip==='AR50') cok = Boolean(s.chartRank) && !hidden;
     else if(activeChip.startsWith('CAT:')) cok = quickCategoryMatch(s,activeChip.slice(4)) && !hidden;
     else if(activeChip) cok = s.tags.includes(activeChip) && !hidden;
     else cok = !hidden;
     return qok&&gok&&cok;
-  }).sort((a,b)=>actualityScore(b)-actualityScore(a) || a.id-b.id);
+  }).sort((a,b)=>{
+    if(activeChip==='REC') return karaokeScore(b)-karaokeScore(a) || actualityScore(b)-actualityScore(a) || a.id-b.id;
+    return actualityScore(b)-actualityScore(a) || a.id-b.id;
+  });
 }
 function render(){
   const list=filtered();
   grid.innerHTML=list.map(card).join('') || '<div class="empty">No encontré canciones con esos filtros.</div>';
   document.getElementById('count').textContent=`${list.length} canciones`;
-  document.getElementById('resultTitle').textContent= activeChip || genre.value || search.value ? 'Resultados' : 'Catálogo completo';
+  document.getElementById('resultTitle').textContent=
+    activeChip==='REC' ? '🔥 Recomendadas para hoy' :
+    (activeChip || genre.value || search.value ? 'Resultados' : 'Catálogo completo');
 }
 function toggleFav(id){
   favorites.has(id)?favorites.delete(id):favorites.add(id);
