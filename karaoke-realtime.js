@@ -64,9 +64,10 @@
     return "https://www.youtube.com/results?search_query=" + encodeURIComponent(q);
   }
 
-  function karaFunSearch(title, artist="") {
+  async function openSingaSearch(title, artist="") {
     const q = [artist, title].filter(Boolean).join(" ");
-    return "https://www.karafun.com/search/?query=" + encodeURIComponent(q);
+    try { await navigator.clipboard.writeText(q); } catch {}
+    window.open("https://singa.com/songs", "_blank");
   }
 
   function openRequest(song=null) {
@@ -251,8 +252,7 @@
     const badge = r.source === "custom" ? " · 🆕 fuera del catálogo" : "";
     const controls = isHost ? `
       <div class="rt-host-actions">
-        <button class="yt" onclick="hostFull(${r.id})">🎤 FULL sync · KaraFun</button>
-        <button class="secondary" onclick="hostGuide(${r.id})">🎙️ Guía/coros · KaraFun</button>
+        <button class="yt" onclick="hostSinga(${r.id})">🎤 Singa · sync + voz guía</button>
         <button class="secondary" onclick="window.open('${r.youtube_url}','_blank')">▶ YouTube sync</button>
         ${r.status !== "current" ? `<button class="queue" onclick="hostCurrent(${r.id})">🎤 Ahora</button>` : ""}
         ${r.status === "waiting" ? `<button class="secondary" onclick="hostMove(${r.id},-1)">↑</button><button class="secondary" onclick="hostMove(${r.id},1)">↓</button>` : ""}
@@ -268,16 +268,10 @@
     </div>`;
   }
 
-  window.hostFull = (id) => {
+  window.hostSinga = async (id) => {
     const r = remoteQueue.find(x => x.id === id);
     if (!r) return;
-    window.open(karaFunSearch(r.title, r.artist || ""), "_blank");
-  };
-
-  window.hostGuide = (id) => {
-    const r = remoteQueue.find(x => x.id === id);
-    if (!r) return;
-    window.open(karaFunSearch(r.title, r.artist || ""), "_blank");
+    await openSingaSearch(r.title, r.artist || "");
   };
 
   window.hostCurrent = async (id) => {
@@ -368,7 +362,6 @@
     if (typeof render === "function") render();
   }
 
-  window.karaFunSearch = karaFunSearch;
 
   async function init() {
     installButtons();
