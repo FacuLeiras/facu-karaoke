@@ -106,7 +106,7 @@ button.secondary{background:var(--panel2);color:var(--text);border:1px solid var
 
   <div class="footer">
     <b>Uso rápido:</b> cada canción tiene un botón <b>🎤 Abrir karaoke en YouTube</b>. También podés quitar temas de tu catálogo con <b>🗑️ Quitar de la lista</b>; quedan guardados en este navegador y se pueden restaurar desde <b>🗑️ Ocultas</b>.<br><br><b>Cómo está curado:</b> mezcla de clásicos de karaoke, canciones que hoy siguen apareciendo fuerte en Argentina y éxitos actuales 2026. La dificultad es orientativa.
-    Los botones “Karaoke” abren una búsqueda directa en YouTube con canción + artista + karaoke/letra, para evitar enlaces rotos y poder elegir la versión que mejor suene.<br><br>
+    “🎤 Karaoke FULL” busca una versión instrumental/karaoke. “🎙️ Con guía / coros” busca versiones con voz guía suave, backing vocals o coros, para cuando quieran más apoyo. Ambos abren búsquedas de YouTube para evitar enlaces rotos y elegir la versión que mejor suene.<br><br>
     <b>Fuentes de tendencia usadas para actualizar la selección (octubre 2026):</b><br>
     Spotify Argentina Top 50 diario (22/10/2026): https://kworb.net/spotify/country/ar_daily.html<br>
     Spotify Global diario (22/10/2026): https://kworb.net/spotify/country/global_daily.html<br>
@@ -151,7 +151,13 @@ chipOptions.forEach(([v,l],i)=>{
 });
 
 function ytUrl(s){
-  const q = `${s.artist} ${s.title} karaoke letra`;
+  const q = `${s.artist} ${s.title} karaoke letra instrumental`;
+  return 'https://www.youtube.com/results?search_query='+encodeURIComponent(q);
+}
+function ytGuideUrl(s){
+  const q = s.lang==='EN'
+    ? `${s.artist} ${s.title} karaoke backing vocals guide vocals`
+    : `${s.artist} ${s.title} karaoke voz guía coros`;
   return 'https://www.youtube.com/results?search_query='+encodeURIComponent(q);
 }
 function escapeHtml(str){return String(str).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
@@ -165,7 +171,8 @@ function card(s){
       <div class="artist">${escapeHtml(s.artist)}</div>
       <div class="meta">${tags}</div>
       <div class="actions">
-        <button class="yt" onclick="window.open('${ytUrl(s)}','_blank')">🎤 Abrir karaoke en YouTube</button>
+        <button class="yt" onclick="window.open('${ytUrl(s)}','_blank')">🎤 Karaoke FULL</button>
+        <button class="copy" onclick="window.open('${ytGuideUrl(s)}','_blank')">🎙️ Con guía / coros</button>
         <button class="queue" onclick="addQueue(${s.id})">＋ Cola</button>
         <button class="copy" onclick="copyReq(${s.id})">📋 Pedido</button>
         <button class="fav${fav}" onclick="toggleFav(${s.id})">★</button>
